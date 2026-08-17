@@ -1,0 +1,27 @@
+{
+  "name": "dsd",
+  "version": "1.0.0",
+  "description": "An open-source website for the DSD friend group. Anyone can branch, add a feature, and open a PR. Deploys stay on Vercel; maintainers keep it running — they are not owners or dictators.",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "lucide-react": "^1.31.0",
+    "next": "^16.3.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "typescript": "^7.0.2"
+  }
+}
