@@ -3,7 +3,11 @@
 import { ArrowRight, Bell, HeartHandshake, Plus, UserPlus } from "lucide-react";
 import { AvatarStack } from "@/components/shared/avatar";
 import ui from "@/components/shared/styles.module.css";
-import type { Activity, Rsvp } from "@/features/activities";
+import {
+  upcomingForFeed,
+  type Activity,
+  type Rsvp,
+} from "@/features/activities";
 import { ActivityFeedCard } from "./ActivityFeedCard";
 import { QuickPollCard } from "./QuickPollCard";
 import styles from "../styles.module.css";
@@ -21,9 +25,7 @@ export function Dashboard({
   onRoles,
   onRsvp,
 }: DashboardProps) {
-  const comingUp = [...activities].sort(
-    (a, b) => a.year - b.year || a.month - b.month || a.day - b.day,
-  );
+  const comingUp = upcomingForFeed(activities);
 
   return (
     <>

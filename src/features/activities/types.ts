@@ -6,6 +6,7 @@ export type Rsvp = "yes" | "no" | null;
 
 export type Activity = {
   id: string;
+  seriesId?: string;
   title: string;
   kind: ActivityKind;
   attention: Attention;
@@ -25,4 +26,13 @@ export type CreateCasualInput = {
   dateIso: string;
   time24: string;
   place: string;
+};
+
+export type CreateRecurringInput = {
+  title: string;
+  attention: Attention;
+  startDateIso: string;
+  time24: string;
+  place: string;
+  weeks?: number;
 };

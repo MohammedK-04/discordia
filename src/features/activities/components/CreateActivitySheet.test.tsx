@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { CreateActivitySheet } from "@/features/activities";
@@ -53,13 +53,62 @@ describe("CreateActivitySheet", () => {
       />,
     );
 
+    await user.click(
+      screen.getByRole("button", { name: /Repeats on a rhythm/i }),
+    );
+    expect(screen.getByRole("button", { name: /Continue/i })).toBeDisabled();
+
+    await user.type(screen.getByLabelText(/Activity name/i), "Thursday soccer");
+    await user.click(screen.getByRole("button", { name: /Continue/i }));
+
+    expect(screen.getByText("Set up the details")).toBeInTheDocument();
+    expect(onCreateCasual).not.toHaveBeenCalled();
+  });
+
+  it("posts eight weekly instances from the recurring details step", async () => {
+    const user = userEvent.setup();
+    const onCreateRecurring = vi.fn();
+
+    render(
+      <CreateActivitySheet
+        open
+        onClose={vi.fn()}
+        onCreateRecurring={onCreateRecurring}
+      />,
+    );
+
     await user.type(screen.getByLabelText(/Activity name/i), "Thursday soccer");
     await user.click(
       screen.getByRole("button", { name: /Repeats on a rhythm/i }),
     );
     await user.click(screen.getByRole("button", { name: /Continue/i }));
 
-    expect(screen.getByText("Set up the details")).toBeInTheDocument();
-    expect(onCreateCasual).not.toHaveBeenCalled();
+    expect(screen.getByLabelText(/First date/i)).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Assign roles/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Post to the group/i }),
+    ).toBeEnabled();
+
+    fireEvent.change(screen.getByLabelText(/First date/i), {
+      target: { value: "" },
+    });
+
+    expect(
+      screen.getByRole("button", { name: /Post to the group/i }),
+    ).toBeEnabled();
+
+    await user.click(
+      screen.getByRole("button", { name: /Post to the group/i }),
+    );
+
+    expect(onCreateRecurring).toHaveBeenCalledOnce();
+    const series = onCreateRecurring.mock.calls[0][0] as { kind: string }[];
+    expect(series).toHaveLength(8);
+    expect(series[0]).toMatchObject({
+      title: "Thursday soccer",
+      kind: "Recurring",
+    });
   });
 });

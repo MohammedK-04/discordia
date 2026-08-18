@@ -16,7 +16,18 @@ import {
 import { Sheet } from "@/components/shared/sheet";
 import ui from "@/components/shared/styles.module.css";
 import { createCasualActivity } from "../data/create-casual";
+import {
+  createRecurringSeries,
+  RECURRING_WEEKS,
+} from "../data/create-recurring";
 import { attentionMeta, kindMeta } from "../data/meta";
+import {
+  DEFAULT_DATE_ISO,
+  DEFAULT_TIME_24,
+  isDateIso,
+  isTime24,
+  weekdayName,
+} from "../data/when";
 import type { Activity, ActivityKind, Attention } from "../types";
 import styles from "../styles.module.css";
 
@@ -24,37 +35,50 @@ type CreateActivitySheetProps = {
   open: boolean;
   onClose: () => void;
   onCreateCasual?: (activity: Activity) => void;
+  onCreateRecurring?: (activities: Activity[]) => void;
 };
 
 export function CreateActivitySheet({
   open,
   onClose,
   onCreateCasual,
+  onCreateRecurring,
 }: CreateActivitySheetProps) {
   const [step, setStep] = useState(1);
   const [kind, setKind] = useState<ActivityKind>("Casual");
   const [attention, setAttention] = useState<Attention>("Whenever");
   const [title, setTitle] = useState("");
-  const [dateIso, setDateIso] = useState("2026-08-23");
-  const [time24, setTime24] = useState("18:30");
+  const [dateIso, setDateIso] = useState(DEFAULT_DATE_ISO);
+  const [time24, setTime24] = useState(DEFAULT_TIME_24);
   const [place, setPlace] = useState("");
   const [roles, setRoles] = useState(false);
   const [funding, setFunding] = useState(false);
 
   const needsSetup = kind !== "Casual";
   const lastStep = needsSetup ? 2 : 1;
-  const canPostCasual = title.trim().length > 0;
+  const hasName = title.trim().length > 0;
+  const firstDate = isDateIso(dateIso) ? dateIso : DEFAULT_DATE_ISO;
+  const firstTime = isTime24(time24) ? time24 : DEFAULT_TIME_24;
+  const weekday = weekdayName(firstDate);
 
   const reset = () => {
     setStep(1);
     setKind("Casual");
     setAttention("Whenever");
     setTitle("");
-    setDateIso("2026-08-23");
-    setTime24("18:30");
+    setDateIso(DEFAULT_DATE_ISO);
+    setTime24(DEFAULT_TIME_24);
     setPlace("");
     setRoles(false);
     setFunding(false);
+  };
+
+  const keepDate = (value: string) => {
+    if (isDateIso(value)) setDateIso(value);
+  };
+
+  const keepTime = (value: string) => {
+    if (isTime24(value)) setTime24(value);
   };
 
   const close = () => {
@@ -63,18 +87,32 @@ export function CreateActivitySheet({
   };
 
   const finish = () => {
+    if (!hasName) return;
+
     if (kind === "Casual") {
-      if (!canPostCasual) return;
       onCreateCasual?.(
         createCasualActivity({
           title,
           attention,
-          dateIso,
-          time24,
+          dateIso: firstDate,
+          time24: firstTime,
           place,
         }),
       );
     }
+
+    if (kind === "Recurring") {
+      onCreateRecurring?.(
+        createRecurringSeries({
+          title,
+          attention,
+          startDateIso: firstDate,
+          time24: firstTime,
+          place,
+        }),
+      );
+    }
+
     close();
   };
 
@@ -87,13 +125,18 @@ export function CreateActivitySheet({
       footer={
         <>
           {step === 2 && (
-            <button className={ui.ghostButton} onClick={() => setStep(1)}>
+            <button
+              type="button"
+              className={ui.ghostButton}
+              onClick={() => setStep(1)}
+            >
               Back
             </button>
           )}
           <button
+            type="button"
             className={`${ui.primaryButton} ${ui.block}`}
-            disabled={step >= lastStep && kind === "Casual" && !canPostCasual}
+            disabled={!hasName}
             onClick={() => (step < lastStep ? setStep(2) : finish())}
           >
             {step < lastStep ? "Continue" : "Post to the group"}
@@ -178,7 +221,7 @@ export function CreateActivitySheet({
                   id="casualDate"
                   type="date"
                   value={dateIso}
-                  onChange={(event) => setDateIso(event.target.value)}
+                  onChange={(event) => keepDate(event.target.value)}
                 />
               </div>
               <label className={ui.fieldLabel} htmlFor="casualTime">
@@ -190,7 +233,7 @@ export function CreateActivitySheet({
                   id="casualTime"
                   type="time"
                   value={time24}
-                  onChange={(event) => setTime24(event.target.value)}
+                  onChange={(event) => keepTime(event.target.value)}
                 />
               </div>
               <label className={ui.fieldLabel} htmlFor="casualPlace">
@@ -207,6 +250,49 @@ export function CreateActivitySheet({
               </div>
             </>
           )}
+        </>
+      ) : kind === "Recurring" ? (
+        <>
+          <p className={ui.helper}>
+            Pick the first {weekday}. We’ll post the next {RECURRING_WEEKS}{" "}
+            weeks — each one has its own RSVP.
+          </p>
+          <label className={ui.fieldLabel} htmlFor="recurringDate">
+            First date
+          </label>
+          <div className={ui.inputWithIcon}>
+            <CalendarDays size={19} />
+            <input
+              id="recurringDate"
+              type="date"
+              value={dateIso}
+              onChange={(event) => keepDate(event.target.value)}
+            />
+          </div>
+          <label className={ui.fieldLabel} htmlFor="recurringTime">
+            Time
+          </label>
+          <div className={ui.inputWithIcon}>
+            <Clock3 size={19} />
+            <input
+              id="recurringTime"
+              type="time"
+              value={time24}
+              onChange={(event) => keepTime(event.target.value)}
+            />
+          </div>
+          <label className={ui.fieldLabel} htmlFor="recurringPlace">
+            Location (optional)
+          </label>
+          <div className={ui.inputWithIcon}>
+            <MapPin size={19} />
+            <input
+              id="recurringPlace"
+              placeholder="Bossen Field, the gym, TBD…"
+              value={place}
+              onChange={(event) => setPlace(event.target.value)}
+            />
+          </div>
         </>
       ) : (
         <>

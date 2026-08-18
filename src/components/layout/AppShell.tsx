@@ -76,6 +76,10 @@ export function AppShell({
     setActivities((current) => [activity, ...current]);
   };
 
+  const handleCreateRecurring = (instances: Activity[]) => {
+    setActivities((current) => [...instances, ...current]);
+  };
+
   const handleRsvp = (id: string, rsvp: Exclude<Rsvp, null>) => {
     setActivities((current) =>
       current.map((activity) =>
@@ -118,6 +122,7 @@ export function AppShell({
         open={createOpen}
         onClose={onCreateClose}
         onCreateCasual={handleCreateCasual}
+        onCreateRecurring={handleCreateRecurring}
       />
       <RoleSheet open={rolesOpen} onClose={onRolesClose} />
     </div>
