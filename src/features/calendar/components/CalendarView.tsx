@@ -23,6 +23,7 @@ import styles from "../styles.module.css";
 
 type CalendarViewProps = {
   onCreate: () => void;
+  events?: CalendarActivity[];
 };
 
 function getEventIcon(event: CalendarActivity) {
@@ -77,7 +78,10 @@ function getDesktopLabelClass(kind: CalendarActivity["kind"]) {
   }
 }
 
-export function CalendarView({ onCreate }: CalendarViewProps) {
+export function CalendarView({
+  onCreate,
+  events = calendarActivities,
+}: CalendarViewProps) {
   const [monthDate, setMonthDate] = useState({ month: 7, year: 2026 });
   const [selectedDay, setSelectedDay] = useState<number | null>(20);
   const firstWeekday = new Date(monthDate.year, monthDate.month, 1).getDay();
@@ -92,7 +96,7 @@ export function CalendarView({ onCreate }: CalendarViewProps) {
   ];
   while (cells.length % 7 !== 0) cells.push(null);
 
-  const monthEvents = calendarActivities.filter(
+  const monthEvents = events.filter(
     (event) => event.month === monthDate.month && event.year === monthDate.year,
   );
   const selectedEvents = selectedDay
@@ -182,7 +186,7 @@ export function CalendarView({ onCreate }: CalendarViewProps) {
                   <span className={styles.eventDots}>
                     {events.map((event) => (
                       <i
-                        key={event.title}
+                        key={event.id ?? event.title}
                         className={styles[event.kind]}
                         title={event.title}
                       />
@@ -243,7 +247,7 @@ export function CalendarView({ onCreate }: CalendarViewProps) {
               agendaEvents.map((event) => (
                 <article
                   className={`${ui.card} ${styles.agendaItem}`}
-                  key={`${event.month}-${event.day}-${event.title}`}
+                  key={event.id ?? `${event.month}-${event.day}-${event.title}`}
                 >
                   <div
                     className={`${styles.agendaDate} ${getAgendaDateClass(event.kind)}`}

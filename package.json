@@ -4,7 +4,7 @@
   "description": "An open-source website for the DSD friend group. Anyone can branch, add a feature, and open a PR. Deploys stay on Vercel; maintainers keep it running — they are not owners or dictators.",
   "private": true,
   "engines": {
-    "node": ">=22"
+    "node": ">=22.13"
   },
   "scripts": {
     "dev": "next dev",

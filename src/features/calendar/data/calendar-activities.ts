@@ -68,3 +68,6 @@ export const calendarActivities: CalendarActivity[] = [
     attendees: 6,
   },
 ];
+
+export const charityCalendarItems: CalendarActivity[] =
+  calendarActivities.filter((event) => event.kind === "charity");

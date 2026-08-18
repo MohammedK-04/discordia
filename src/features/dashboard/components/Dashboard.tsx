@@ -1,30 +1,30 @@
 "use client";
 
-import {
-  ArrowRight,
-  Bell,
-  CalendarDays,
-  Car,
-  Clock3,
-  HeartHandshake,
-  MapPin,
-  Plus,
-  Sparkles,
-  UserPlus,
-  Utensils,
-} from "lucide-react";
-import { Avatar, AvatarStack } from "@/components/shared/avatar";
+import { ArrowRight, Bell, HeartHandshake, Plus, UserPlus } from "lucide-react";
+import { AvatarStack } from "@/components/shared/avatar";
 import ui from "@/components/shared/styles.module.css";
-import { people } from "@/lib/data/people";
+import type { Activity, Rsvp } from "@/features/activities";
+import { ActivityFeedCard } from "./ActivityFeedCard";
 import { QuickPollCard } from "./QuickPollCard";
 import styles from "../styles.module.css";
 
 type DashboardProps = {
+  activities: Activity[];
   onCreate: () => void;
   onRoles: () => void;
+  onRsvp: (id: string, rsvp: Exclude<Rsvp, null>) => void;
 };
 
-export function Dashboard({ onCreate, onRoles }: DashboardProps) {
+export function Dashboard({
+  activities,
+  onCreate,
+  onRoles,
+  onRsvp,
+}: DashboardProps) {
+  const comingUp = [...activities].sort(
+    (a, b) => a.year - b.year || a.month - b.month || a.day - b.day,
+  );
+
   return (
     <>
       <header className={styles.greeting}>
@@ -59,7 +59,7 @@ export function Dashboard({ onCreate, onRoles }: DashboardProps) {
         <article className={`${ui.card} ${styles.pollCard}`}>
           <div className={ui.cardHead}>
             <span className={`${styles.liveBadge} ${styles.liveBadgeViolet}`}>
-              <Clock3 size={13} /> 37 MIN LEFT
+              37 MIN LEFT
             </span>
           </div>
           <h3>Which field for Thursday?</h3>
@@ -99,151 +99,20 @@ export function Dashboard({ onCreate, onRoles }: DashboardProps) {
           <span className={ui.eyebrow}>COMING UP</span>
           <h2>Activities</h2>
         </div>
-        <button className={ui.linkButton}>
-          View all <ArrowRight size={15} />
+        <button className={ui.linkButton} onClick={onCreate}>
+          New hangout <ArrowRight size={15} />
         </button>
       </div>
 
       <div className={styles.activityGrid}>
-        <article className={`${ui.card} ${styles.activityCard}`}>
-          <div className={`${styles.activityImage} ${styles.campingImage}`}>
-            <div className={styles.cardTags}>
-              <span className={`${styles.tag} ${styles.tagAction}`}>
-                ACTION REQUIRED
-              </span>
-              <span className={`${styles.tag} ${styles.tagPlanned}`}>
-                PLANNED TRIP
-              </span>
-            </div>
-            <div className={styles.dateTile}>
-              <b>29</b>
-              <span>AUG</span>
-            </div>
-          </div>
-          <div className={styles.activityBody}>
-            <div className={styles.hostLine}>
-              <Avatar person={people[1]} small />
-              <span>Organized by Omar</span>
-            </div>
-            <h3>North Shore Camping Weekend</h3>
-            <p className={styles.detailLine}>
-              <CalendarDays size={16} /> Aug 29–31
-              <span className={ui.dot} />
-              <MapPin size={16} /> Tettegouche
-            </p>
-            <div className={styles.panel}>
-              <div className={styles.panelTop}>
-                <span>Roles filled</span>
-                <b>8 of 12</b>
-              </div>
-              <div className={ui.progress}>
-                <span style={{ width: "66%" }} />
-              </div>
-              <div className={styles.needList}>
-                <span>
-                  <Car size={15} /> 2 drivers
-                </span>
-                <span>
-                  <Utensils size={15} /> 1 cook
-                </span>
-                <span className={styles.maybeChip}>3 maybes</span>
-              </div>
-            </div>
-            <button
-              className={`${ui.primaryButton} ${ui.block}`}
-              onClick={onRoles}
-            >
-              Pick up a role <ArrowRight size={17} />
-            </button>
-            <div className={ui.cardFoot}>
-              <div className={ui.footMeta}>
-                <AvatarStack count={4} extra={4} />
-                <span>12 going</span>
-              </div>
-              <span className={styles.deadline}>Locks Aug 22, 5 PM</span>
-            </div>
-          </div>
-        </article>
-
-        <article className={`${ui.card} ${styles.activityCard}`}>
-          <div className={`${styles.activityImage} ${styles.soccerImage}`}>
-            <div className={styles.cardTags}>
-              <span className={`${styles.tag} ${styles.tagRecurring}`}>
-                ↻ RECURRING
-              </span>
-            </div>
-            <div className={styles.dateTile}>
-              <b>20</b>
-              <span>AUG</span>
-            </div>
-          </div>
-          <div className={styles.activityBody}>
-            <div className={styles.hostLine}>
-              <Avatar person={people[2]} small />
-              <span>Hosted by Yusuf</span>
-            </div>
-            <h3>Thursday Night Soccer</h3>
-            <p className={styles.detailLine}>
-              <Clock3 size={16} /> 7:00 PM
-              <span className={ui.dot} />
-              <MapPin size={16} /> Bossen Field
-            </p>
-            <div className={`${styles.panel} ${styles.panelLime}`}>
-              <div className={styles.panelTop}>
-                <span>11 going</span>
-                <b>Need 3 more</b>
-              </div>
-              <div className={ui.progress}>
-                <span style={{ width: "78%" }} />
-              </div>
-            </div>
-            <div className={ui.splitButtons}>
-              <button className={ui.primaryButton}>I’m in</button>
-              <button className={ui.outlineButton}>Can’t make it</button>
-            </div>
-            <div className={ui.cardFoot}>
-              <div className={ui.footMeta}>
-                <AvatarStack count={4} extra={7} />
-                <span>Weekly run</span>
-              </div>
-              <span className={styles.deadline}>RSVP by 5:00 PM</span>
-            </div>
-          </div>
-        </article>
-
-        <article className={`${ui.card} ${styles.activityCard}`}>
-          <div className={`${styles.activityImage} ${styles.hangoutImage}`}>
-            <div className={styles.cardTags}>
-              <span className={`${styles.tag} ${styles.tagCasual}`}>
-                ✦ CASUAL
-              </span>
-            </div>
-            <div className={styles.dateTile}>
-              <b>22</b>
-              <span>AUG</span>
-            </div>
-          </div>
-          <div className={styles.activityBody}>
-            <div className={styles.hostLine}>
-              <Avatar person={people[3]} small />
-              <span>Hosted by Ibrahim</span>
-            </div>
-            <h3>Backyard Grill & Hangout</h3>
-            <p className={styles.detailLine}>
-              <Clock3 size={16} /> 6:30 PM
-              <span className={ui.dot} />
-              <MapPin size={16} /> Ibrahim’s place
-            </p>
-            <div className={styles.casualNote}>
-              <Sparkles size={18} />
-              <span>No roles, no pressure. Bring something if you want.</span>
-            </div>
-            <div className={ui.splitButtons}>
-              <button className={ui.primaryButton}>Going</button>
-              <button className={ui.outlineButton}>Maybe</button>
-            </div>
-          </div>
-        </article>
+        {comingUp.map((activity) => (
+          <ActivityFeedCard
+            key={activity.id}
+            activity={activity}
+            onRsvp={onRsvp}
+            onRoles={onRoles}
+          />
+        ))}
       </div>
 
       <div className={styles.sectionHead}>

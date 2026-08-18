@@ -7,22 +7,59 @@ describe("CreateActivitySheet", () => {
   it("posts a casual activity without opening the setup step", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
+    const onCreateCasual = vi.fn();
 
-    render(<CreateActivitySheet open onClose={onClose} />);
+    render(
+      <CreateActivitySheet
+        open
+        onClose={onClose}
+        onCreateCasual={onCreateCasual}
+      />,
+    );
 
-    expect(screen.getByText(/Casual plans skip setup/i)).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Post to the group/i }),
-    ).toBeInTheDocument();
+    ).toBeDisabled();
     expect(
       screen.queryByRole("button", { name: /Continue/i }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/^Date$/i)).toBeInTheDocument();
 
+    await user.type(
+      screen.getByLabelText(/Activity name/i),
+      "Dinner after soccer",
+    );
     await user.click(
       screen.getByRole("button", { name: /Post to the group/i }),
     );
 
+    expect(onCreateCasual).toHaveBeenCalledOnce();
+    expect(onCreateCasual.mock.calls[0][0]).toMatchObject({
+      title: "Dinner after soccer",
+      kind: "Casual",
+    });
     expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("sends Recurring plans to the details step instead of posting", async () => {
+    const user = userEvent.setup();
+    const onCreateCasual = vi.fn();
+
+    render(
+      <CreateActivitySheet
+        open
+        onClose={vi.fn()}
+        onCreateCasual={onCreateCasual}
+      />,
+    );
+
+    await user.type(screen.getByLabelText(/Activity name/i), "Thursday soccer");
+    await user.click(
+      screen.getByRole("button", { name: /Repeats on a rhythm/i }),
+    );
+    await user.click(screen.getByRole("button", { name: /Continue/i }));
+
+    expect(screen.getByText("Set up the details")).toBeInTheDocument();
+    expect(onCreateCasual).not.toHaveBeenCalled();
   });
 });
