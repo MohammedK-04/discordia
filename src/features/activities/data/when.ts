@@ -13,9 +13,39 @@ const MONTHS = [
   "Dec",
 ];
 
-export function parseDateIso(dateIso: string) {
+const WEEKDAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+export type CalendarDate = {
+  year: number;
+  month: number;
+  day: number;
+};
+
+export function parseDateIso(dateIso: string): CalendarDate {
   const [year, month, day] = dateIso.split("-").map(Number);
   return { year, month: month - 1, day };
+}
+
+export function addWeeks(date: CalendarDate, weeks: number): CalendarDate {
+  const next = new Date(date.year, date.month, date.day + weeks * 7);
+  return {
+    year: next.getFullYear(),
+    month: next.getMonth(),
+    day: next.getDate(),
+  };
+}
+
+export function weekdayName(date: CalendarDate | string) {
+  const parts = typeof date === "string" ? parseDateIso(date) : date;
+  return WEEKDAYS[new Date(parts.year, parts.month, parts.day).getDay()];
 }
 
 export function formatTime24(time24: string) {

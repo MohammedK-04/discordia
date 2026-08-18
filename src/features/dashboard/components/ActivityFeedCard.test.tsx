@@ -36,4 +36,20 @@ describe("ActivityFeedCard", () => {
     await user.click(screen.getByRole("button", { name: /Can’t make it/i }));
     expect(onRsvp).toHaveBeenCalledWith("casual-grill", "no");
   });
+
+  it("lets you RSVP to one week of a recurring series", async () => {
+    const user = userEvent.setup();
+    const onRsvp = vi.fn();
+    const soccer = seedActivities.find(
+      (activity) => activity.id === "recurring-soccer",
+    );
+    if (!soccer) throw new Error("missing seed");
+
+    render(
+      <ActivityFeedCard activity={soccer} onRsvp={onRsvp} onRoles={vi.fn()} />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /I’m in/i }));
+    expect(onRsvp).toHaveBeenCalledWith("recurring-soccer", "yes");
+  });
 });

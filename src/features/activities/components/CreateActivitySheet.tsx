@@ -16,7 +16,12 @@ import {
 import { Sheet } from "@/components/shared/sheet";
 import ui from "@/components/shared/styles.module.css";
 import { createCasualActivity } from "../data/create-casual";
+import {
+  createRecurringSeries,
+  RECURRING_WEEKS,
+} from "../data/create-recurring";
 import { attentionMeta, kindMeta } from "../data/meta";
+import { weekdayName } from "../data/when";
 import type { Activity, ActivityKind, Attention } from "../types";
 import styles from "../styles.module.css";
 
@@ -24,12 +29,14 @@ type CreateActivitySheetProps = {
   open: boolean;
   onClose: () => void;
   onCreateCasual?: (activity: Activity) => void;
+  onCreateRecurring?: (activities: Activity[]) => void;
 };
 
 export function CreateActivitySheet({
   open,
   onClose,
   onCreateCasual,
+  onCreateRecurring,
 }: CreateActivitySheetProps) {
   const [step, setStep] = useState(1);
   const [kind, setKind] = useState<ActivityKind>("Casual");
@@ -44,6 +51,14 @@ export function CreateActivitySheet({
   const needsSetup = kind !== "Casual";
   const lastStep = needsSetup ? 2 : 1;
   const canPostCasual = title.trim().length > 0;
+  const canPostRecurring = canPostCasual && dateIso.length > 0;
+  const canPost =
+    kind === "Casual"
+      ? canPostCasual
+      : kind === "Recurring"
+        ? canPostRecurring
+        : true;
+  const weekday = weekdayName(dateIso);
 
   const reset = () => {
     setStep(1);
@@ -75,6 +90,20 @@ export function CreateActivitySheet({
         }),
       );
     }
+
+    if (kind === "Recurring") {
+      if (!canPostRecurring) return;
+      onCreateRecurring?.(
+        createRecurringSeries({
+          title,
+          attention,
+          startDateIso: dateIso,
+          time24,
+          place,
+        }),
+      );
+    }
+
     close();
   };
 
@@ -93,7 +122,7 @@ export function CreateActivitySheet({
           )}
           <button
             className={`${ui.primaryButton} ${ui.block}`}
-            disabled={step >= lastStep && kind === "Casual" && !canPostCasual}
+            disabled={step >= lastStep && !canPost}
             onClick={() => (step < lastStep ? setStep(2) : finish())}
           >
             {step < lastStep ? "Continue" : "Post to the group"}
@@ -207,6 +236,49 @@ export function CreateActivitySheet({
               </div>
             </>
           )}
+        </>
+      ) : kind === "Recurring" ? (
+        <>
+          <p className={ui.helper}>
+            Pick the first {weekday}. We’ll post the next {RECURRING_WEEKS}{" "}
+            weeks — each one has its own RSVP.
+          </p>
+          <label className={ui.fieldLabel} htmlFor="recurringDate">
+            First date
+          </label>
+          <div className={ui.inputWithIcon}>
+            <CalendarDays size={19} />
+            <input
+              id="recurringDate"
+              type="date"
+              value={dateIso}
+              onChange={(event) => setDateIso(event.target.value)}
+            />
+          </div>
+          <label className={ui.fieldLabel} htmlFor="recurringTime">
+            Time
+          </label>
+          <div className={ui.inputWithIcon}>
+            <Clock3 size={19} />
+            <input
+              id="recurringTime"
+              type="time"
+              value={time24}
+              onChange={(event) => setTime24(event.target.value)}
+            />
+          </div>
+          <label className={ui.fieldLabel} htmlFor="recurringPlace">
+            Location (optional)
+          </label>
+          <div className={ui.inputWithIcon}>
+            <MapPin size={19} />
+            <input
+              id="recurringPlace"
+              placeholder="Bossen Field, the gym, TBD…"
+              value={place}
+              onChange={(event) => setPlace(event.target.value)}
+            />
+          </div>
         </>
       ) : (
         <>

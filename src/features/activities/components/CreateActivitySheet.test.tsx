@@ -62,4 +62,40 @@ describe("CreateActivitySheet", () => {
     expect(screen.getByText("Set up the details")).toBeInTheDocument();
     expect(onCreateCasual).not.toHaveBeenCalled();
   });
+
+  it("posts eight weekly instances from the recurring details step", async () => {
+    const user = userEvent.setup();
+    const onCreateRecurring = vi.fn();
+
+    render(
+      <CreateActivitySheet
+        open
+        onClose={vi.fn()}
+        onCreateRecurring={onCreateRecurring}
+      />,
+    );
+
+    await user.type(screen.getByLabelText(/Activity name/i), "Thursday soccer");
+    await user.click(
+      screen.getByRole("button", { name: /Repeats on a rhythm/i }),
+    );
+    await user.click(screen.getByRole("button", { name: /Continue/i }));
+
+    expect(screen.getByLabelText(/First date/i)).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Assign roles/i }),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /Post to the group/i }),
+    );
+
+    expect(onCreateRecurring).toHaveBeenCalledOnce();
+    const series = onCreateRecurring.mock.calls[0][0] as { kind: string }[];
+    expect(series).toHaveLength(8);
+    expect(series[0]).toMatchObject({
+      title: "Thursday soccer",
+      kind: "Recurring",
+    });
+  });
 });

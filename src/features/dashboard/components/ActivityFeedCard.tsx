@@ -9,8 +9,12 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarStack } from "@/components/shared/avatar";
 import ui from "@/components/shared/styles.module.css";
-import type { Activity, Rsvp } from "@/features/activities";
-import { formatShortDate } from "@/features/activities";
+import {
+  formatShortDate,
+  weekdayName,
+  type Activity,
+  type Rsvp,
+} from "@/features/activities";
 import styles from "../styles.module.css";
 
 const MONTH_SHORT = [
@@ -163,9 +167,9 @@ export function ActivityFeedCard({
                   count={4}
                   extra={Math.max(activity.goingCount - 4, 0)}
                 />
-                <span>Weekly run</span>
+                <span>Weekly {weekdayName(activity)}</span>
               </div>
-              <span className={styles.deadline}>RSVP by 5:00 PM</span>
+              <span className={styles.deadline}>This week’s RSVP</span>
             </div>
           </>
         )}
