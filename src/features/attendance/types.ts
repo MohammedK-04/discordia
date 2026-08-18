@@ -1,1 +1,1 @@
-export type RoleReply = "in" | "maybe" | null;
+export type { RoleReply } from "@/features/activities";

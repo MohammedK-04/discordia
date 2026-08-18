@@ -1,56 +1,75 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { AvatarStack } from "@/components/shared/avatar";
 import ui from "@/components/shared/styles.module.css";
-import { foodPollOptions } from "../data/poll-options";
+import { totalVotes, type Poll } from "@/features/polls";
 import styles from "../styles.module.css";
 
-export function QuickPollCard() {
-  const [selected, setSelected] = useState<string | null>(null);
+type QuickPollCardProps = {
+  poll: Poll;
+  onVote: (pollId: string, option: string) => void;
+};
+
+export function QuickPollCard({ poll, onVote }: QuickPollCardProps) {
+  const total = totalVotes(poll);
+  const closed = poll.minutesLeft <= 0;
 
   return (
     <article className={`${ui.card} ${styles.pollCard}`}>
       <div className={ui.cardHead}>
         <span className={styles.liveBadge}>
-          <span /> QUICK DECISION
+          <span /> {closed ? "CLOSED" : "QUICK DECISION"}
         </span>
-        <span className={styles.timeLeft}>Closes 8:30 PM</span>
+        <span className={styles.timeLeft}>
+          {closed ? "Voting ended" : `Closes in ${poll.minutesLeft} min`}
+        </span>
       </div>
-      <h3>Food after soccer tonight?</h3>
-      <p className={ui.sub}>Started by Yusuf · 14 votes</p>
+      <h3>{poll.question}</h3>
+      <p className={ui.sub}>
+        Started by {poll.host.name} · {total} votes
+      </p>
       <div className={styles.pollOptions}>
-        {foodPollOptions.map(([name, votes, percent]) => (
-          <button
-            key={name}
-            className={`${styles.pollOption} ${selected === name ? styles.voted : ""}`}
-            onClick={() => setSelected(name)}
-          >
-            <span
-              className={styles.pollFill}
-              style={{ width: `${percent}%` }}
-            />
-            <span className={styles.pollName}>
+        {poll.options.map((option) => {
+          const percent =
+            total === 0 ? 0 : Math.round((option.votes / total) * 100);
+          const selected = poll.myVote === option.name;
+          return (
+            <button
+              type="button"
+              key={option.name}
+              className={`${styles.pollOption} ${selected ? styles.voted : ""}`}
+              onClick={() => onVote(poll.id, option.name)}
+              disabled={closed}
+            >
               <span
-                className={`${ui.radio} ${ui.radioSmall} ${selected === name ? ui.votedRadio : ""}`}
-              >
-                {selected === name && <Check size={13} />}
+                className={styles.pollFill}
+                style={{ width: `${percent}%` }}
+              />
+              <span className={styles.pollName}>
+                <span
+                  className={`${ui.radio} ${ui.radioSmall} ${selected ? ui.votedRadio : ""}`}
+                >
+                  {selected && <Check size={13} />}
+                </span>
+                {option.name}
               </span>
-              {name}
-            </span>
-            <span className={styles.pollVotes}>{votes}</span>
-          </button>
-        ))}
+              <span className={styles.pollVotes}>{option.votes}</span>
+            </button>
+          );
+        })}
       </div>
       <div className={ui.cardFoot}>
         <div className={ui.footMeta}>
-          <AvatarStack count={3} extra={8} />
-          <span>11 friends voted</span>
+          <AvatarStack count={3} extra={Math.max(total - 3, 0)} />
+          <span>
+            {total} friends voted
+            {poll.myVote ? ` · you picked ${poll.myVote}` : ""}
+          </span>
         </div>
-        <button className={ui.linkButton}>
-          Details <ArrowRight size={15} />
-        </button>
+        <span className={ui.linkButton}>
+          Live tally <ArrowRight size={15} />
+        </span>
       </div>
     </article>
   );

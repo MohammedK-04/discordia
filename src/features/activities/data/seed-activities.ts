@@ -15,6 +15,32 @@ export const seedActivities: Activity[] = [
     host: people[1],
     myRsvp: null,
     goingCount: 12,
+    roles: [
+      {
+        name: "Drivers",
+        needed: 4,
+        claimed: [people[1], people[3]],
+        waitlist: [people[4]],
+        maybes: [people[2]],
+        myReply: null,
+        decideBy: "Aug 22, 5:00 PM",
+      },
+      {
+        name: "Cooks",
+        needed: 2,
+        claimed: [people[2]],
+        waitlist: [],
+        maybes: [],
+        myReply: null,
+        decideBy: "Aug 22, 5:00 PM",
+      },
+    ],
+    funding: {
+      goal: 1200,
+      perPerson: 60,
+      raised: 480,
+      myPaid: false,
+    },
   },
   {
     id: "recurring-soccer",

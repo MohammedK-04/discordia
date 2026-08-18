@@ -11,6 +11,9 @@ import { Avatar, AvatarStack } from "@/components/shared/avatar";
 import ui from "@/components/shared/styles.module.css";
 import {
   formatShortDate,
+  maybeCount,
+  rolesFilled,
+  rolesNeeded,
   weekdayName,
   type Activity,
   type Rsvp,
@@ -35,7 +38,8 @@ const MONTH_SHORT = [
 type ActivityFeedCardProps = {
   activity: Activity;
   onRsvp: (id: string, rsvp: Exclude<Rsvp, null>) => void;
-  onRoles: () => void;
+  onRoles: (id: string) => void;
+  onPay?: (id: string) => void;
 };
 
 function imageClass(kind: Activity["kind"]) {
@@ -48,6 +52,7 @@ export function ActivityFeedCard({
   activity,
   onRsvp,
   onRoles,
+  onPay,
 }: ActivityFeedCardProps) {
   const goingSelected = activity.myRsvp === "yes";
   const noSelected = activity.myRsvp === "no";
@@ -102,36 +107,103 @@ export function ActivityFeedCard({
 
         {activity.kind === "Planned" && (
           <>
-            <div className={styles.panel}>
-              <div className={styles.panelTop}>
-                <span>Roles filled</span>
-                <b>8 of 12</b>
+            {activity.roles && activity.myRsvp !== "no" && (
+              <div className={styles.panel}>
+                <div className={styles.panelTop}>
+                  <span>Roles filled</span>
+                  <b>
+                    {rolesFilled(activity.roles)} of{" "}
+                    {rolesNeeded(activity.roles)}
+                  </b>
+                </div>
+                <div className={ui.progress}>
+                  <span
+                    style={{
+                      width: `${Math.min(
+                        (rolesFilled(activity.roles) /
+                          Math.max(rolesNeeded(activity.roles), 1)) *
+                          100,
+                        100,
+                      )}%`,
+                    }}
+                  />
+                </div>
+                <div className={styles.needList}>
+                  {activity.roles.map((role) => (
+                    <span key={role.name}>
+                      {role.name === "Cooks" ? (
+                        <Utensils size={15} />
+                      ) : (
+                        <Car size={15} />
+                      )}{" "}
+                      {Math.max(role.needed - role.claimed.length, 0)}{" "}
+                      {role.name.toLowerCase()}
+                    </span>
+                  ))}
+                  {maybeCount(activity.roles) > 0 && (
+                    <span className={styles.maybeChip}>
+                      {maybeCount(activity.roles)} maybes
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className={ui.progress}>
-                <span style={{ width: "66%" }} />
-              </div>
-              <div className={styles.needList}>
-                <span>
-                  <Car size={15} /> 2 drivers
-                </span>
-                <span>
-                  <Utensils size={15} /> 1 cook
-                </span>
-                <span className={styles.maybeChip}>3 maybes</span>
-              </div>
+            )}
+            <div className={ui.splitButtons}>
+              <button
+                type="button"
+                className={goingSelected ? ui.primaryButton : ui.outlineButton}
+                onClick={() => onRsvp(activity.id, "yes")}
+              >
+                I’m going
+              </button>
+              <button
+                type="button"
+                className={noSelected ? ui.primaryButton : ui.outlineButton}
+                onClick={() => onRsvp(activity.id, "no")}
+              >
+                Can’t make it
+              </button>
             </div>
-            <button
-              className={`${ui.primaryButton} ${ui.block}`}
-              onClick={onRoles}
-            >
-              Pick up a role <ArrowRight size={17} />
-            </button>
+            {goingSelected && activity.roles && (
+              <button
+                type="button"
+                className={`${ui.primaryButton} ${ui.block}`}
+                onClick={() => onRoles(activity.id)}
+                style={{ marginTop: 10 }}
+              >
+                Pick up a role <ArrowRight size={17} />
+              </button>
+            )}
+            {goingSelected && activity.funding && (
+              <button
+                type="button"
+                className={`${ui.outlineButton} ${ui.block}`}
+                onClick={() => onPay?.(activity.id)}
+                style={{ marginTop: 10 }}
+              >
+                {activity.funding.myPaid
+                  ? `Paid $${activity.funding.perPerson}`
+                  : `Pay $${activity.funding.perPerson} trip share`}
+              </button>
+            )}
+            {noSelected && (
+              <p className={styles.casualNote}>
+                You’re out — no roles or trip money from you on this one.
+              </p>
+            )}
             <div className={ui.cardFoot}>
               <div className={ui.footMeta}>
-                <AvatarStack count={4} extra={4} />
+                <AvatarStack
+                  count={4}
+                  extra={Math.max(activity.goingCount - 4, 0)}
+                />
                 <span>{activity.goingCount} going</span>
               </div>
-              <span className={styles.deadline}>Locks Aug 22, 5 PM</span>
+              {activity.funding && (
+                <span className={styles.deadline}>
+                  ${activity.funding.raised} / ${activity.funding.goal}
+                </span>
+              )}
             </div>
           </>
         )}
@@ -167,9 +239,11 @@ export function ActivityFeedCard({
                   count={4}
                   extra={Math.max(activity.goingCount - 4, 0)}
                 />
-                <span>Weekly {weekdayName(activity)}</span>
+                <span>This {weekdayName(activity)}</span>
               </div>
-              <span className={styles.deadline}>This week’s RSVP</span>
+              <span className={styles.deadline}>
+                Next week opens at midnight
+              </span>
             </div>
           </>
         )}

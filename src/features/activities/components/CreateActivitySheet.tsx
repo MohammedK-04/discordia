@@ -16,10 +16,8 @@ import {
 import { Sheet } from "@/components/shared/sheet";
 import ui from "@/components/shared/styles.module.css";
 import { createCasualActivity } from "../data/create-casual";
-import {
-  createRecurringSeries,
-  RECURRING_WEEKS,
-} from "../data/create-recurring";
+import { createPlannedActivity } from "../data/create-planned";
+import { createRecurringSeries } from "../data/create-recurring";
 import { attentionMeta, kindMeta } from "../data/meta";
 import {
   DEFAULT_DATE_ISO,
@@ -28,7 +26,7 @@ import {
   isTime24,
   weekdayName,
 } from "../data/when";
-import type { Activity, ActivityKind, Attention } from "../types";
+import type { Activity, ActivityKind, Attention, RoleDraft } from "../types";
 import styles from "../styles.module.css";
 
 type CreateActivitySheetProps = {
@@ -36,6 +34,7 @@ type CreateActivitySheetProps = {
   onClose: () => void;
   onCreateCasual?: (activity: Activity) => void;
   onCreateRecurring?: (activities: Activity[]) => void;
+  onCreatePlanned?: (activity: Activity) => void;
 };
 
 export function CreateActivitySheet({
@@ -43,6 +42,7 @@ export function CreateActivitySheet({
   onClose,
   onCreateCasual,
   onCreateRecurring,
+  onCreatePlanned,
 }: CreateActivitySheetProps) {
   const [step, setStep] = useState(1);
   const [kind, setKind] = useState<ActivityKind>("Casual");
@@ -53,6 +53,12 @@ export function CreateActivitySheet({
   const [place, setPlace] = useState("");
   const [roles, setRoles] = useState(false);
   const [funding, setFunding] = useState(false);
+  const [roleDrafts, setRoleDrafts] = useState<RoleDraft[]>([
+    { name: "Drivers", needed: 4 },
+    { name: "Cooks", needed: 2 },
+  ]);
+  const [goal, setGoal] = useState("1200");
+  const [share, setShare] = useState("60");
 
   const needsSetup = kind !== "Casual";
   const lastStep = needsSetup ? 2 : 1;
@@ -71,6 +77,12 @@ export function CreateActivitySheet({
     setPlace("");
     setRoles(false);
     setFunding(false);
+    setRoleDrafts([
+      { name: "Drivers", needed: 4 },
+      { name: "Cooks", needed: 2 },
+    ]);
+    setGoal("1200");
+    setShare("60");
   };
 
   const keepDate = (value: string) => {
@@ -109,6 +121,25 @@ export function CreateActivitySheet({
           startDateIso: firstDate,
           time24: firstTime,
           place,
+        }),
+      );
+    }
+
+    if (kind === "Planned") {
+      onCreatePlanned?.(
+        createPlannedActivity({
+          title,
+          attention,
+          dateIso: firstDate,
+          time24: firstTime,
+          place,
+          roles: roles ? roleDrafts : undefined,
+          funding: funding
+            ? {
+                goal: Number(goal) || 0,
+                perPerson: Number(share) || 0,
+              }
+            : undefined,
         }),
       );
     }
@@ -254,8 +285,8 @@ export function CreateActivitySheet({
       ) : kind === "Recurring" ? (
         <>
           <p className={ui.helper}>
-            Pick the first {weekday}. We’ll post the next {RECURRING_WEEKS}{" "}
-            weeks — each one has its own RSVP.
+            People RSVP to this {weekday} only. After midnight that day, next
+            week opens with a fresh count.
           </p>
           <label className={ui.fieldLabel} htmlFor="recurringDate">
             First date
@@ -301,7 +332,12 @@ export function CreateActivitySheet({
           </label>
           <div className={ui.inputWithIcon}>
             <CalendarDays size={19} />
-            <input id="activityDate" defaultValue="Aug 29, 2026" />
+            <input
+              id="activityDate"
+              type="date"
+              value={dateIso}
+              onChange={(event) => keepDate(event.target.value)}
+            />
           </div>
 
           <label className={ui.fieldLabel} htmlFor="activityTime">
@@ -309,7 +345,12 @@ export function CreateActivitySheet({
           </label>
           <div className={ui.inputWithIcon}>
             <Clock3 size={19} />
-            <input id="activityTime" defaultValue="9:00 AM" />
+            <input
+              id="activityTime"
+              type="time"
+              value={time24}
+              onChange={(event) => keepTime(event.target.value)}
+            />
           </div>
 
           <label className={ui.fieldLabel} htmlFor="activityPlace">
@@ -317,7 +358,12 @@ export function CreateActivitySheet({
           </label>
           <div className={ui.inputWithIcon}>
             <MapPin size={19} />
-            <input id="activityPlace" placeholder="Add a place or address" />
+            <input
+              id="activityPlace"
+              placeholder="Add a place or address"
+              value={place}
+              onChange={(event) => setPlace(event.target.value)}
+            />
           </div>
 
           <div className={styles.toggleRow}>
@@ -329,6 +375,7 @@ export function CreateActivitySheet({
               <small>Drivers, cooks, gear — say how many you need.</small>
             </span>
             <button
+              type="button"
               className={`${styles.switch} ${roles ? styles.switchOn : ""}`}
               onClick={() => setRoles(!roles)}
               aria-pressed={roles}
@@ -340,17 +387,61 @@ export function CreateActivitySheet({
 
           {roles && (
             <div className={styles.roleBuilder}>
-              <div className={styles.roleBuilderRow}>
-                <Car size={18} />
-                <input defaultValue="Drivers" aria-label="Role name" />
-                <span className={styles.countPill}>4 needed</span>
-              </div>
-              <div className={styles.roleBuilderRow}>
-                <Utensils size={18} />
-                <input defaultValue="Cooks" aria-label="Role name" />
-                <span className={styles.countPill}>2 needed</span>
-              </div>
-              <button className={styles.addRole}>
+              {roleDrafts.map((draft, index) => (
+                <div
+                  className={styles.roleBuilderRow}
+                  key={`${draft.name}-${index}`}
+                >
+                  {index === 0 ? <Car size={18} /> : <Utensils size={18} />}
+                  <input
+                    value={draft.name}
+                    aria-label="Role name"
+                    onChange={(event) =>
+                      setRoleDrafts((current) =>
+                        current.map((item, itemIndex) =>
+                          itemIndex === index
+                            ? { ...item, name: event.target.value }
+                            : item,
+                        ),
+                      )
+                    }
+                  />
+                  <label className={styles.countPill}>
+                    <input
+                      aria-label={`${draft.name} needed`}
+                      inputMode="numeric"
+                      value={draft.needed}
+                      onChange={(event) =>
+                        setRoleDrafts((current) =>
+                          current.map((item, itemIndex) =>
+                            itemIndex === index
+                              ? {
+                                  ...item,
+                                  needed: Math.max(
+                                    Number(event.target.value) || 0,
+                                    1,
+                                  ),
+                                }
+                              : item,
+                          ),
+                        )
+                      }
+                      style={{ width: 36, textAlign: "center" }}
+                    />{" "}
+                    needed
+                  </label>
+                </div>
+              ))}
+              <button
+                type="button"
+                className={styles.addRole}
+                onClick={() =>
+                  setRoleDrafts((current) => [
+                    ...current,
+                    { name: "New role", needed: 1 },
+                  ])
+                }
+              >
                 <Plus size={17} /> Add another role
               </button>
               <p>
@@ -369,6 +460,7 @@ export function CreateActivitySheet({
               <small>Set a goal, or require an amount per person.</small>
             </span>
             <button
+              type="button"
               className={`${styles.switch} ${funding ? styles.switchOn : ""}`}
               onClick={() => setFunding(!funding)}
               aria-pressed={funding}
@@ -388,8 +480,9 @@ export function CreateActivitySheet({
                   <CircleDollarSign size={18} />
                   <input
                     id="fundGoal"
-                    defaultValue="1,200"
+                    value={goal}
                     inputMode="decimal"
+                    onChange={(event) => setGoal(event.target.value)}
                   />
                 </div>
               </div>
@@ -399,7 +492,12 @@ export function CreateActivitySheet({
                 </label>
                 <div className={ui.inputWithIcon}>
                   <CircleDollarSign size={18} />
-                  <input id="fundShare" defaultValue="60" inputMode="decimal" />
+                  <input
+                    id="fundShare"
+                    value={share}
+                    inputMode="decimal"
+                    onChange={(event) => setShare(event.target.value)}
+                  />
                 </div>
               </div>
             </div>
