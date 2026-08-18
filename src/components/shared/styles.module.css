@@ -1,0 +1,309 @@
+/* Shared UI primitives: buttons, cards, forms, avatars, progress */
+
+.primaryButton,
+.darkButton,
+.outlineButton,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 18px;
+  border: 0;
+  border-radius: 13px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.primaryButton,
+.darkButton {
+  background: var(--ink);
+  color: #fff;
+}
+
+.primaryButton:active,
+.darkButton:active {
+  background: #2f3c35;
+  transform: scale(0.985);
+}
+
+.primaryButton:disabled {
+  background: #cfd3cc;
+  color: #7b827d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.outlineButton,
+.ghostButton {
+  background: transparent;
+  border: 1px solid #d5d9d1;
+}
+
+.outlineButton {
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.outlineButton:active,
+.ghostButton:active {
+  background: #edeee8;
+}
+
+.block {
+  width: 100%;
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.splitButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.splitButtons .outlineButton {
+  min-height: var(--tap);
+  font-size: 15px;
+}
+
+.iconButton {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #4f5854;
+  position: relative;
+}
+
+.iconButton:active {
+  background: #ebece6;
+}
+
+.iconButtonHasDot::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.avatarButton {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  background: transparent;
+}
+
+.eyebrow {
+  display: block;
+  color: #8b928d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.helper {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid #eaebe5;
+  border-radius: 18px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f1eb;
+}
+
+.footMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.avatarStack {
+  display: flex;
+  padding-left: 8px;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #313d36;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.avatarSmall {
+  width: 28px;
+  height: 28px;
+  margin-left: -8px;
+  border: 2px solid #fff;
+  font-size: 9px;
+}
+
+.avatarMore {
+  background: #e8eae3;
+  color: #5a635e;
+}
+
+.radio {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #c8cec4;
+  border-radius: 50%;
+  background: #fff;
+  color: #fff;
+}
+
+.radioSmall {
+  width: 20px;
+  height: 20px;
+}
+
+.selectedRadio,
+.votedRadio {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.progress {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfe2da;
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--lime-deep);
+}
+
+.progressRose > span {
+  background: var(--rose);
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #c3c9c3;
+}
+
+.fieldLabel {
+  display: block;
+  margin: 20px 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.textInput,
+.inputWithIcon {
+  border: 1.5px solid #dee0d9;
+  border-radius: 13px;
+  background: #fff;
+}
+
+.textInput {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 14px;
+  outline: 0;
+}
+
+.inputWithIcon {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 14px;
+  color: #7f867f;
+}
+
+.inputWithIcon input {
+  width: 100%;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  outline: 0;
+}
+
+.textInput:focus,
+.inputWithIcon:focus-within {
+  border-color: #93a55b;
+  box-shadow: 0 0 0 3px rgba(217, 243, 109, 0.3);
+}
+
+.brandMark {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(25, 33, 29, 0.16);
+}
+
+@media (min-width: 1024px) {
+  .primaryButton:hover,
+  .darkButton:hover {
+    background: #2f3c35;
+  }
+
+  .outlineButton:hover,
+  .ghostButton:hover {
+    background: #edeee8;
+  }
+}

@@ -1,0 +1,473 @@
+.greeting h1 {
+  margin: 7px 0 4px;
+  font-size: 27px;
+  line-height: 1.15;
+}
+
+.greeting p {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 32px 0 14px;
+}
+
+.sectionHead h2 {
+  margin-top: 3px;
+  font-size: 20px;
+}
+
+.attentionCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #e2daff;
+  border-radius: 16px;
+  background: #f0edff;
+  text-align: left;
+}
+
+.attentionCard:active {
+  background: #e8e3ff;
+}
+
+.attentionIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #dcd2ff;
+  color: #55407f;
+}
+
+.attentionText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.attentionText strong {
+  font-size: 15px;
+}
+
+.attentionText small {
+  color: #6d6683;
+  font-size: 12.5px;
+}
+
+.pollGrid,
+.activityGrid,
+.charityGrid {
+  display: grid;
+  gap: 14px;
+}
+
+.pollCard {
+  padding: 16px;
+}
+
+.pollCard h3,
+.activityBody h3 {
+  font-size: 19px;
+  line-height: 1.25;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #a04a2c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.liveBadge > span:first-child {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 3px #ffe0d6;
+}
+
+.liveBadgeViolet {
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #efeaff;
+  color: var(--violet);
+}
+
+.timeLeft {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pollOptions {
+  display: grid;
+  gap: 9px;
+  margin: 14px 0;
+}
+
+.pollOption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 14px;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  border-radius: 13px;
+  background: #f4f5ef;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.pollFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: #e7ecd0;
+}
+
+.voted {
+  border-color: var(--lime-deep);
+  background: #f2f7dd;
+}
+
+.pollName,
+.pollVotes {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pollVotes {
+  font-weight: 800;
+}
+
+.activityCard {
+  overflow: hidden;
+}
+
+.activityImage {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
+}
+
+.activityImage::before,
+.activityImage::after {
+  content: "";
+  position: absolute;
+}
+
+.campingImage {
+  background:
+    linear-gradient(180deg, rgba(18, 36, 29, 0.05), rgba(18, 36, 29, 0.42)),
+    linear-gradient(135deg, #a9c6bb, #426b5b 52%, #223f34);
+}
+
+.campingImage::before {
+  bottom: -2px;
+  left: 15%;
+  border-bottom: 60px solid #28483c;
+  border-left: 92px solid transparent;
+  border-right: 92px solid transparent;
+}
+
+.campingImage::after {
+  bottom: 16px;
+  left: 52%;
+  width: 8px;
+  height: 21px;
+  border-radius: 50% 50% 5px 5px;
+  background: #e39a52;
+  box-shadow: 0 0 24px #ffcb68;
+}
+
+.soccerImage {
+  background: linear-gradient(165deg, #78a783, #416d51 70%, #274b38);
+}
+
+.soccerImage::before {
+  top: 16px;
+  left: 34%;
+  width: 112px;
+  height: 112px;
+  border: 2px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+}
+
+.soccerImage::after {
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 48%,
+    rgba(255, 255, 255, 0.2) 49% 51%,
+    transparent 52%
+  );
+}
+
+.hangoutImage {
+  background:
+    radial-gradient(circle at 30% 66%, #ffc46b 0 3%, transparent 4%),
+    radial-gradient(circle at 41% 72%, #ef764f 0 2%, transparent 3%),
+    linear-gradient(155deg, #dfb27b, #7b5d49 55%, #353c32);
+}
+
+.hangoutImage::after {
+  top: 28px;
+  left: 25%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(249, 236, 200, 0.22);
+  box-shadow:
+    40px -10px 0 rgba(249, 236, 200, 0.2),
+    82px 10px 0 rgba(249, 236, 200, 0.18),
+    118px -14px 0 rgba(249, 236, 200, 0.2);
+}
+
+.cardTags {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  border-radius: 7px;
+  padding: 6px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.tagAction {
+  background: var(--orange);
+  color: #fff;
+}
+
+.tagPlanned {
+  background: rgba(22, 42, 34, 0.78);
+  color: #fff;
+}
+
+.tagRecurring {
+  background: rgba(217, 243, 109, 0.94);
+}
+
+.tagCasual {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.dateTile {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.dateTile b {
+  font-size: 19px;
+  line-height: 1;
+}
+
+.dateTile span {
+  color: #79817c;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+}
+
+.activityBody {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.hostLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.detailLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  color: #6b736e;
+  font-size: 13.5px;
+}
+
+.panel {
+  padding: 13px;
+  border-radius: 14px;
+  background: #f4f5ef;
+}
+
+.panelLime {
+  background: #f3f7e4;
+}
+
+.panelTop {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  font-size: 13.5px;
+}
+
+.needList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.needList span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: #57605a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.maybeChip {
+  background: #efeaff !important;
+  color: var(--violet) !important;
+}
+
+.casualNote {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  border-radius: 14px;
+  background: #fff6e8;
+  color: #74644f;
+  font-size: 13.5px;
+}
+
+.deadline {
+  color: #a05537;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.charityCard {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.fundTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fundTop strong {
+  display: block;
+  font-size: 16px;
+}
+
+.charityIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #f8e8e0;
+  color: #a35a41;
+}
+
+.inviteRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 15px;
+}
+
+.inviteRow div {
+  flex: 1;
+}
+
+.inviteRow strong {
+  display: block;
+  font-size: 15px;
+}
+
+.inviteRow small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.inviteIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #e6ece2;
+  color: #46614a;
+}
+
+@media (min-width: 700px) {
+  .pollGrid,
+  .activityGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .charityGrid {
+    grid-template-columns: minmax(0, 560px);
+  }
+
+  .greeting h1 {
+    font-size: 34px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .activityGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .pollOption:hover {
+    border-color: #c8d2a4;
+  }
+}

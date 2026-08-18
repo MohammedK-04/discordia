@@ -1,0 +1,99 @@
+.sheetBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(18, 24, 21, 0.55);
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 93vh;
+  border-radius: 24px 24px 0 0;
+  background: #fbfbf8;
+  animation: sheetUp 0.24s ease-out;
+}
+
+@keyframes sheetUp {
+  from {
+    transform: translateY(6%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}
+
+.sheetGrip {
+  width: 44px;
+  height: 5px;
+  margin: 9px auto 2px;
+  border-radius: 999px;
+  background: #d8dad2;
+}
+
+.sheetHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px 12px var(--gutter);
+}
+
+.sheetHead h2 {
+  margin-top: 5px;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.sheetBody {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 0 var(--gutter) 18px;
+}
+
+.sheetFoot {
+  display: flex;
+  gap: 10px;
+  padding: 12px var(--gutter) calc(12px + var(--safe-bottom));
+  border-top: 1px solid var(--line);
+  background: #fbfbf8;
+}
+
+.sheetFoot .ghostButton {
+  flex: 0 0 auto;
+  padding: 0 20px;
+}
+
+@media (min-width: 700px) {
+  .sheetBackdrop {
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .sheet {
+    max-width: 560px;
+    max-height: 88vh;
+    border-radius: 22px;
+  }
+
+  .sheetGrip {
+    display: none;
+  }
+
+  .sheetHead {
+    padding-top: 20px;
+  }
+
+  .sheetFoot {
+    padding-bottom: 16px;
+  }
+}

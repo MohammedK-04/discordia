@@ -1,0 +1,258 @@
+.attendanceQuestion {
+  display: grid;
+  gap: 13px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid #e4e6df;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.attendanceQuestion > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.attendanceQuestion strong {
+  font-family: "Manrope", sans-serif;
+  font-size: 17px;
+}
+
+.attendanceQuestion span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.attendanceButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.attendanceButtons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 52px;
+  padding: 0 10px;
+  border: 1.5px solid #d9ddd5;
+  border-radius: 13px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.yesSelected {
+  border-color: #8eaa43;
+  background: #f1f7d8;
+  color: #35451d;
+}
+
+.noSelected {
+  border-color: #d49580;
+  background: #fff0eb;
+  color: #7c3f2b;
+}
+
+.attendancePrompt {
+  display: grid;
+  place-items: center;
+  gap: 7px;
+  padding: 34px 22px;
+  border: 1px dashed #d5d9d1;
+  border-radius: 16px;
+  color: #7d857f;
+  text-align: center;
+}
+
+.attendancePrompt strong {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.attendancePrompt p {
+  max-width: 330px;
+  font-size: 13px;
+}
+
+.declineCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 17px;
+  border-radius: 16px;
+  background: #eef3e9;
+}
+
+.declineIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d7e6cc;
+  color: #48613c;
+}
+
+.declineCard strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 15px;
+}
+
+.declineCard p {
+  color: #657060;
+  font-size: 13px;
+}
+
+.deadlineNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 13px;
+  border-radius: 14px;
+  background: #fff3e6;
+  color: #7d5a3c;
+  font-size: 13.5px;
+}
+
+.deadlineNote svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.roleCard {
+  display: grid;
+  gap: 11px;
+  margin-bottom: 12px;
+  padding: 15px;
+  border: 1px solid #eaebe5;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.roleCard header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.roleCard header div {
+  flex: 1;
+}
+
+.roleCard strong {
+  display: block;
+  font-size: 16px;
+}
+
+.roleCard small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.roleIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f1f3ec;
+  color: #4d5751;
+}
+
+.roleCount {
+  font-family: "Manrope", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.claimedRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.replyButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.replyButtons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: var(--tap);
+  border: 1.5px solid #dee0d9;
+  border-radius: 13px;
+  background: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.replyYesSelected {
+  border-color: var(--lime-deep);
+  background: #f2f7dd;
+}
+
+.replyMaybeSelected {
+  border-color: #b7a6e4;
+  background: #f1eeff;
+}
+
+.maybeDetail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  background: #f1eeff;
+  color: #5c5378;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.maybeDetail input {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  outline: 0;
+}
+
+.waitlistCard {
+  display: grid;
+  gap: 9px;
+  padding: 15px;
+  border: 1px dashed #d3d7cd;
+  border-radius: 16px;
+}
+
+.waitlistCard strong {
+  font-size: 15px;
+}
+
+.waitlistCard p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.yes,
+.no,
+.maybe {
+  /* base button styles inherited from replyButtons / attendanceButtons */
+}

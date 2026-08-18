@@ -1,0 +1,430 @@
+.calendarPage {
+  min-width: 0;
+}
+
+.calendarHero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.calendarHero h1 {
+  margin: 5px 0 3px;
+  font-size: 28px;
+}
+
+.calendarHero p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.addActivityButton {
+  display: none;
+}
+
+.calendarLayout {
+  display: grid;
+  gap: 20px;
+}
+
+.monthCard {
+  min-width: 0;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.monthHeader {
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.monthHeader > div {
+  text-align: center;
+}
+
+.monthHeader h2 {
+  font-size: 19px;
+}
+
+.monthHeader > div button {
+  min-height: 30px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #748058;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.weekdayRow,
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekdayRow {
+  border-bottom: 1px solid var(--line);
+}
+
+.weekdayRow span {
+  display: grid;
+  place-items: center;
+  height: 34px;
+  color: #909791;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.calendarGrid {
+  padding-top: 6px;
+}
+
+.calendarGrid > button,
+.emptyDay {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+}
+
+.calendarGrid > button:active {
+  background: #eff0e9;
+}
+
+.dayNumber {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.today .dayNumber {
+  color: #41521e;
+  background: #edf5cb;
+  box-shadow: inset 0 0 0 1px #cadb83;
+}
+
+.selected .dayNumber {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: none;
+}
+
+.eventDots {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  display: flex;
+  gap: 2px;
+  transform: translateX(-50%);
+}
+
+.eventDots i,
+.calendarLegend i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.recurring {
+  background: #8fae30;
+}
+
+.casual {
+  background: #db9d4f;
+}
+
+.planned {
+  background: #4f7768;
+}
+
+.charity {
+  background: #c66e55;
+}
+
+.desktopEventLabel {
+  display: none;
+}
+
+.calendarLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 14px 4px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.calendarLegend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.agenda {
+  min-width: 0;
+}
+
+.agendaHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.agendaHeader h2 {
+  margin-top: 3px;
+  font-size: 20px;
+}
+
+.agendaList {
+  display: grid;
+  gap: 11px;
+}
+
+.agendaItem {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 13px;
+  padding: 14px;
+}
+
+.agendaDate {
+  display: flex;
+  align-items: center;
+  align-self: start;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 61px;
+  border-radius: 14px;
+  background: #eef3de;
+  color: #496027;
+}
+
+.agendaDateCasual {
+  background: #fff1de;
+  color: #835822;
+}
+
+.agendaDatePlanned {
+  background: #e4efeb;
+  color: #345749;
+}
+
+.agendaDateCharity {
+  background: #f9e8e1;
+  color: #884b39;
+}
+
+.agendaDate span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.agendaDate b {
+  font-family: "Manrope", sans-serif;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.agendaBody {
+  min-width: 0;
+}
+
+.agendaKind {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.agendaIcon {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 9px;
+  background: #edf2dd;
+  color: #607532;
+}
+
+.agendaIconCasual {
+  background: #fff1de;
+  color: #92612a;
+}
+
+.agendaIconPlanned {
+  background: #e4efeb;
+  color: #3e6656;
+}
+
+.agendaIconCharity {
+  background: #f9e8e1;
+  color: #9a5843;
+}
+
+.agendaBody h3 {
+  overflow: hidden;
+  font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agendaBody > p {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.agendaDot {
+  width: 3px;
+  height: 3px;
+  margin: 0 2px;
+  border-radius: 50%;
+  background: #b9c0ba;
+}
+
+.agendaFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid #eff0eb;
+}
+
+.agendaFoot .footMeta {
+  gap: 7px;
+}
+
+.emptyAgenda {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  min-height: 190px;
+  padding: 24px;
+  border: 1px dashed #d6d9d1;
+  border-radius: 18px;
+  color: #7a827d;
+  text-align: center;
+}
+
+.emptyAgenda strong {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.emptyAgenda p {
+  font-size: 13px;
+}
+
+@media (min-width: 1024px) {
+  .addActivityButton {
+    display: inline-flex;
+  }
+
+  .calendarHero h1 {
+    font-size: 36px;
+  }
+
+  .calendarLayout {
+    grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.8fr);
+    align-items: start;
+  }
+
+  .monthCard {
+    padding: 18px;
+  }
+
+  .calendarGrid > button,
+  .emptyDay {
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 82px;
+    padding: 7px;
+    border-radius: 10px;
+  }
+
+  .calendarGrid > button {
+    border-right: 1px solid #f0f1ec;
+    border-bottom: 1px solid #f0f1ec;
+  }
+
+  .dayNumber {
+    width: 27px;
+    height: 27px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .eventDots {
+    display: none;
+  }
+
+  .desktopEventLabel {
+    position: absolute;
+    right: 6px;
+    bottom: 8px;
+    left: 6px;
+    display: block;
+    overflow: hidden;
+    padding: 5px 6px;
+    border-radius: 6px;
+    background: #edf3d9;
+    color: #566b29;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desktopEventLabelCasual {
+    background: #fff0dc;
+    color: #855923;
+  }
+
+  .desktopEventLabelPlanned {
+    background: #e2eeea;
+    color: #34594a;
+  }
+
+  .desktopEventLabelCharity {
+    background: #f8e7e0;
+    color: #89503d;
+  }
+
+  .agendaList {
+    max-height: 590px;
+    padding-right: 3px;
+    overflow-y: auto;
+  }
+}

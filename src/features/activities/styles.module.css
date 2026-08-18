@@ -1,0 +1,218 @@
+.stepLine {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.stepLine span {
+  height: 4px;
+  border-radius: 999px;
+  background: #e2e4dd;
+}
+
+.stepActive {
+  background: var(--ink);
+}
+
+.optionList {
+  display: grid;
+  gap: 9px;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  padding: 12px 14px;
+  border: 1.5px solid #dee0d9;
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+}
+
+.optionRowTight {
+  min-height: 56px;
+}
+
+.optionRowSelected {
+  border-color: #93a55b;
+  background: #f7fae9;
+}
+
+.optionIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #eff1ea;
+  font-size: 17px;
+}
+
+.optionText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.optionText strong {
+  font-size: 15px;
+}
+
+.optionText small {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.toggleIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.toggleIconLilac {
+  background: #eee8ff;
+  color: #62508a;
+}
+
+.toggleIconMint {
+  background: #e3f1e0;
+  color: #4d7048;
+}
+
+.toggleText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggleText strong {
+  font-size: 15px;
+}
+
+.toggleText small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.switch {
+  flex: 0 0 auto;
+  width: 54px;
+  height: 32px;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: #d6d9d1;
+  transition: background 0.2s ease;
+}
+
+.switch span {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.switchOn {
+  background: var(--forest);
+}
+
+.switchOn span {
+  transform: translateX(22px);
+}
+
+.roleBuilder,
+.fundingBuilder {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 14px;
+  background: #f1eeff;
+}
+
+.fundingBuilder {
+  grid-template-columns: 1fr 1fr;
+  background: #ebf3e8;
+}
+
+.fundingBuilder .fieldLabel {
+  margin-top: 0;
+}
+
+.roleBuilderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border-radius: 11px;
+  background: #fff;
+  color: #5c5378;
+}
+
+.roleBuilderRow input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  outline: 0;
+}
+
+.countPill {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1eeff;
+  color: #5c5378;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.addRole {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  border: 1.5px dashed #c6bce8;
+  border-radius: 11px;
+  background: transparent;
+  color: #5c5378;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.roleBuilder p {
+  color: #6a6383;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+@media (min-width: 1024px) {
+  .optionRow:hover {
+    border-color: #b9c298;
+  }
+}
