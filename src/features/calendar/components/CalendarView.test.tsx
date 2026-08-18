@@ -17,4 +17,30 @@ describe("CalendarView", () => {
 
     expect(screen.getByText("Coming up")).toBeInTheDocument();
   });
+
+  it("shows a hangout passed in from the activity list", () => {
+    render(
+      <CalendarView
+        onCreate={vi.fn()}
+        events={[
+          {
+            id: "casual-new",
+            day: 23,
+            month: 7,
+            year: 2026,
+            title: "Dinner after soccer",
+            time: "6:30 PM",
+            place: "Afro Deli",
+            kind: "casual",
+            iconName: "sparkles",
+            attendees: 1,
+          },
+        ]}
+      />,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Dinner after soccer" }),
+    ).toBeInTheDocument();
+  });
 });

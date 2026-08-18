@@ -1,8 +1,19 @@
 "use client";
 
-import { CreateActivitySheet } from "@/features/activities";
+import { useState } from "react";
+import {
+  applyRsvp,
+  CreateActivitySheet,
+  seedActivities,
+  type Activity,
+  type Rsvp,
+} from "@/features/activities";
 import { RoleSheet } from "@/features/attendance";
-import { CalendarView } from "@/features/calendar";
+import {
+  CalendarView,
+  charityCalendarItems,
+  type CalendarActivity,
+} from "@/features/calendar";
 import { Dashboard } from "@/features/dashboard";
 import { AppBar } from "./AppBar";
 import type { TabName } from "./nav";
@@ -22,6 +33,33 @@ type AppShellProps = {
   onRolesClose: () => void;
 };
 
+function toCalendarEvent(activity: Activity): CalendarActivity {
+  const kind =
+    activity.kind === "Casual"
+      ? "casual"
+      : activity.kind === "Recurring"
+        ? "recurring"
+        : "planned";
+
+  return {
+    id: activity.id,
+    day: activity.day,
+    month: activity.month,
+    year: activity.year,
+    title: activity.title,
+    time: activity.time,
+    place: activity.place,
+    kind,
+    iconName:
+      activity.kind === "Casual"
+        ? "sparkles"
+        : activity.kind === "Recurring"
+          ? "compass"
+          : "car",
+    attendees: activity.goingCount,
+  };
+}
+
 export function AppShell({
   tab,
   onTabChange,
@@ -32,6 +70,25 @@ export function AppShell({
   onRolesOpen,
   onRolesClose,
 }: AppShellProps) {
+  const [activities, setActivities] = useState<Activity[]>(seedActivities);
+
+  const handleCreateCasual = (activity: Activity) => {
+    setActivities((current) => [activity, ...current]);
+  };
+
+  const handleRsvp = (id: string, rsvp: Exclude<Rsvp, null>) => {
+    setActivities((current) =>
+      current.map((activity) =>
+        activity.id === id ? applyRsvp(activity, rsvp) : activity,
+      ),
+    );
+  };
+
+  const calendarEvents = [
+    ...activities.map(toCalendarEvent),
+    ...charityCalendarItems,
+  ];
+
   return (
     <div className={layout.appShell}>
       <Sidebar tab={tab} onTabChange={onTabChange} onCreate={onCreateOpen} />
@@ -41,9 +98,14 @@ export function AppShell({
 
         <div className={layout.content}>
           {tab === "Home" ? (
-            <Dashboard onCreate={onCreateOpen} onRoles={onRolesOpen} />
+            <Dashboard
+              activities={activities}
+              onCreate={onCreateOpen}
+              onRoles={onRolesOpen}
+              onRsvp={handleRsvp}
+            />
           ) : tab === "Calendar" ? (
-            <CalendarView onCreate={onCreateOpen} />
+            <CalendarView onCreate={onCreateOpen} events={calendarEvents} />
           ) : (
             <PlaceholderView tab={tab} onGoHome={() => onTabChange("Home")} />
           )}
@@ -52,7 +114,11 @@ export function AppShell({
 
       <TabBar tab={tab} onTabChange={onTabChange} onCreate={onCreateOpen} />
 
-      <CreateActivitySheet open={createOpen} onClose={onCreateClose} />
+      <CreateActivitySheet
+        open={createOpen}
+        onClose={onCreateClose}
+        onCreateCasual={handleCreateCasual}
+      />
       <RoleSheet open={rolesOpen} onClose={onRolesClose} />
     </div>
   );

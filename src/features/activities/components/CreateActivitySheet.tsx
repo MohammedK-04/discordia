@@ -15,31 +15,67 @@ import {
 } from "lucide-react";
 import { Sheet } from "@/components/shared/sheet";
 import ui from "@/components/shared/styles.module.css";
+import { createCasualActivity } from "../data/create-casual";
 import { attentionMeta, kindMeta } from "../data/meta";
-import type { ActivityKind, Attention } from "../types";
+import type { Activity, ActivityKind, Attention } from "../types";
 import styles from "../styles.module.css";
 
 type CreateActivitySheetProps = {
   open: boolean;
   onClose: () => void;
+  onCreateCasual?: (activity: Activity) => void;
 };
 
 export function CreateActivitySheet({
   open,
   onClose,
+  onCreateCasual,
 }: CreateActivitySheetProps) {
   const [step, setStep] = useState(1);
   const [kind, setKind] = useState<ActivityKind>("Casual");
   const [attention, setAttention] = useState<Attention>("Whenever");
+  const [title, setTitle] = useState("");
+  const [dateIso, setDateIso] = useState("2026-08-23");
+  const [time24, setTime24] = useState("18:30");
+  const [place, setPlace] = useState("");
   const [roles, setRoles] = useState(false);
   const [funding, setFunding] = useState(false);
 
   const needsSetup = kind !== "Casual";
   const lastStep = needsSetup ? 2 : 1;
+  const canPostCasual = title.trim().length > 0;
+
+  const reset = () => {
+    setStep(1);
+    setKind("Casual");
+    setAttention("Whenever");
+    setTitle("");
+    setDateIso("2026-08-23");
+    setTime24("18:30");
+    setPlace("");
+    setRoles(false);
+    setFunding(false);
+  };
 
   const close = () => {
     onClose();
-    setStep(1);
+    reset();
+  };
+
+  const finish = () => {
+    if (kind === "Casual") {
+      if (!canPostCasual) return;
+      onCreateCasual?.(
+        createCasualActivity({
+          title,
+          attention,
+          dateIso,
+          time24,
+          place,
+        }),
+      );
+    }
+    close();
   };
 
   return (
@@ -57,7 +93,8 @@ export function CreateActivitySheet({
           )}
           <button
             className={`${ui.primaryButton} ${ui.block}`}
-            onClick={() => (step < lastStep ? setStep(2) : close())}
+            disabled={step >= lastStep && kind === "Casual" && !canPostCasual}
+            onClick={() => (step < lastStep ? setStep(2) : finish())}
           >
             {step < lastStep ? "Continue" : "Post to the group"}
             {step < lastStep ? <ArrowRight size={18} /> : <Check size={18} />}
@@ -79,6 +116,8 @@ export function CreateActivitySheet({
             id="activityName"
             className={ui.textInput}
             placeholder="Dinner after soccer"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
           />
 
           <p className={ui.fieldLabel}>What kind of plan is this?</p>
@@ -125,9 +164,48 @@ export function CreateActivitySheet({
           </div>
 
           {kind === "Casual" && (
-            <p className={ui.helper}>
-              Casual plans skip setup — post it now and let people show up.
-            </p>
+            <>
+              <p className={ui.helper}>
+                Casual plans skip the full setup — add a time if you have one,
+                then post.
+              </p>
+              <label className={ui.fieldLabel} htmlFor="casualDate">
+                Date
+              </label>
+              <div className={ui.inputWithIcon}>
+                <CalendarDays size={19} />
+                <input
+                  id="casualDate"
+                  type="date"
+                  value={dateIso}
+                  onChange={(event) => setDateIso(event.target.value)}
+                />
+              </div>
+              <label className={ui.fieldLabel} htmlFor="casualTime">
+                Time
+              </label>
+              <div className={ui.inputWithIcon}>
+                <Clock3 size={19} />
+                <input
+                  id="casualTime"
+                  type="time"
+                  value={time24}
+                  onChange={(event) => setTime24(event.target.value)}
+                />
+              </div>
+              <label className={ui.fieldLabel} htmlFor="casualPlace">
+                Location (optional)
+              </label>
+              <div className={ui.inputWithIcon}>
+                <MapPin size={19} />
+                <input
+                  id="casualPlace"
+                  placeholder="Ibrahim’s, the park, TBD…"
+                  value={place}
+                  onChange={(event) => setPlace(event.target.value)}
+                />
+              </div>
+            </>
           )}
         </>
       ) : (

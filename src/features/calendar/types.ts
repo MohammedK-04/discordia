@@ -2,6 +2,7 @@ export type CalendarActivityKind =
   "recurring" | "casual" | "planned" | "charity";
 
 export type CalendarActivity = {
+  id?: string;
   day: number;
   month: number;
   year: number;
