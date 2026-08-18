@@ -21,7 +21,13 @@ import {
   RECURRING_WEEKS,
 } from "../data/create-recurring";
 import { attentionMeta, kindMeta } from "../data/meta";
-import { weekdayName } from "../data/when";
+import {
+  DEFAULT_DATE_ISO,
+  DEFAULT_TIME_24,
+  isDateIso,
+  isTime24,
+  weekdayName,
+} from "../data/when";
 import type { Activity, ActivityKind, Attention } from "../types";
 import styles from "../styles.module.css";
 
@@ -42,34 +48,37 @@ export function CreateActivitySheet({
   const [kind, setKind] = useState<ActivityKind>("Casual");
   const [attention, setAttention] = useState<Attention>("Whenever");
   const [title, setTitle] = useState("");
-  const [dateIso, setDateIso] = useState("2026-08-23");
-  const [time24, setTime24] = useState("18:30");
+  const [dateIso, setDateIso] = useState(DEFAULT_DATE_ISO);
+  const [time24, setTime24] = useState(DEFAULT_TIME_24);
   const [place, setPlace] = useState("");
   const [roles, setRoles] = useState(false);
   const [funding, setFunding] = useState(false);
 
   const needsSetup = kind !== "Casual";
   const lastStep = needsSetup ? 2 : 1;
-  const canPostCasual = title.trim().length > 0;
-  const canPostRecurring = canPostCasual && dateIso.length > 0;
-  const canPost =
-    kind === "Casual"
-      ? canPostCasual
-      : kind === "Recurring"
-        ? canPostRecurring
-        : true;
-  const weekday = weekdayName(dateIso);
+  const hasName = title.trim().length > 0;
+  const firstDate = isDateIso(dateIso) ? dateIso : DEFAULT_DATE_ISO;
+  const firstTime = isTime24(time24) ? time24 : DEFAULT_TIME_24;
+  const weekday = weekdayName(firstDate);
 
   const reset = () => {
     setStep(1);
     setKind("Casual");
     setAttention("Whenever");
     setTitle("");
-    setDateIso("2026-08-23");
-    setTime24("18:30");
+    setDateIso(DEFAULT_DATE_ISO);
+    setTime24(DEFAULT_TIME_24);
     setPlace("");
     setRoles(false);
     setFunding(false);
+  };
+
+  const keepDate = (value: string) => {
+    if (isDateIso(value)) setDateIso(value);
+  };
+
+  const keepTime = (value: string) => {
+    if (isTime24(value)) setTime24(value);
   };
 
   const close = () => {
@@ -78,27 +87,27 @@ export function CreateActivitySheet({
   };
 
   const finish = () => {
+    if (!hasName) return;
+
     if (kind === "Casual") {
-      if (!canPostCasual) return;
       onCreateCasual?.(
         createCasualActivity({
           title,
           attention,
-          dateIso,
-          time24,
+          dateIso: firstDate,
+          time24: firstTime,
           place,
         }),
       );
     }
 
     if (kind === "Recurring") {
-      if (!canPostRecurring) return;
       onCreateRecurring?.(
         createRecurringSeries({
           title,
           attention,
-          startDateIso: dateIso,
-          time24,
+          startDateIso: firstDate,
+          time24: firstTime,
           place,
         }),
       );
@@ -116,13 +125,18 @@ export function CreateActivitySheet({
       footer={
         <>
           {step === 2 && (
-            <button className={ui.ghostButton} onClick={() => setStep(1)}>
+            <button
+              type="button"
+              className={ui.ghostButton}
+              onClick={() => setStep(1)}
+            >
               Back
             </button>
           )}
           <button
+            type="button"
             className={`${ui.primaryButton} ${ui.block}`}
-            disabled={step >= lastStep && !canPost}
+            disabled={!hasName}
             onClick={() => (step < lastStep ? setStep(2) : finish())}
           >
             {step < lastStep ? "Continue" : "Post to the group"}
@@ -207,7 +221,7 @@ export function CreateActivitySheet({
                   id="casualDate"
                   type="date"
                   value={dateIso}
-                  onChange={(event) => setDateIso(event.target.value)}
+                  onChange={(event) => keepDate(event.target.value)}
                 />
               </div>
               <label className={ui.fieldLabel} htmlFor="casualTime">
@@ -219,7 +233,7 @@ export function CreateActivitySheet({
                   id="casualTime"
                   type="time"
                   value={time24}
-                  onChange={(event) => setTime24(event.target.value)}
+                  onChange={(event) => keepTime(event.target.value)}
                 />
               </div>
               <label className={ui.fieldLabel} htmlFor="casualPlace">
@@ -252,7 +266,7 @@ export function CreateActivitySheet({
               id="recurringDate"
               type="date"
               value={dateIso}
-              onChange={(event) => setDateIso(event.target.value)}
+              onChange={(event) => keepDate(event.target.value)}
             />
           </div>
           <label className={ui.fieldLabel} htmlFor="recurringTime">
@@ -264,7 +278,7 @@ export function CreateActivitySheet({
               id="recurringTime"
               type="time"
               value={time24}
-              onChange={(event) => setTime24(event.target.value)}
+              onChange={(event) => keepTime(event.target.value)}
             />
           </div>
           <label className={ui.fieldLabel} htmlFor="recurringPlace">

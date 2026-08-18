@@ -58,3 +58,14 @@ export function formatTime24(time24: string) {
 export function formatShortDate(day: number, month: number) {
   return `${MONTHS[month]} ${day}`;
 }
+
+export const DEFAULT_DATE_ISO = "2026-08-20";
+export const DEFAULT_TIME_24 = "18:30";
+
+export function isDateIso(value: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+export function isTime24(value: string) {
+  return /^\d{2}:\d{2}$/.test(value);
+}
