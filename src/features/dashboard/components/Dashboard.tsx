@@ -1,31 +1,54 @@
 "use client";
 
 import { ArrowRight, Bell, HeartHandshake, Plus, UserPlus } from "lucide-react";
-import { AvatarStack } from "@/components/shared/avatar";
 import ui from "@/components/shared/styles.module.css";
-import {
-  upcomingForFeed,
-  type Activity,
-  type Rsvp,
-} from "@/features/activities";
+import type { Activity, Rsvp } from "@/features/activities";
+import type { CharityCycle } from "@/features/charity";
+import type { Poll } from "@/features/polls";
 import { ActivityFeedCard } from "./ActivityFeedCard";
+import { LeaderboardCard } from "./LeaderboardCard";
 import { QuickPollCard } from "./QuickPollCard";
+import { leaderboard } from "../data/leaderboard";
+import { needsYou } from "../data/needs";
+import type { Notice } from "../data/notices";
 import styles from "../styles.module.css";
 
 type DashboardProps = {
   activities: Activity[];
+  polls: Poll[];
+  charity: CharityCycle;
+  notices: Notice[];
   onCreate: () => void;
-  onRoles: () => void;
+  onRoles: (id: string) => void;
   onRsvp: (id: string, rsvp: Exclude<Rsvp, null>) => void;
+  onPay: (id: string) => void;
+  onVote: (pollId: string, option: string) => void;
+  onNewPoll: () => void;
+  onGive: () => void;
+  onCharity: () => void;
 };
 
 export function Dashboard({
   activities,
+  polls,
+  charity,
+  notices,
   onCreate,
   onRoles,
   onRsvp,
+  onPay,
+  onVote,
+  onNewPoll,
+  onGive,
+  onCharity,
 }: DashboardProps) {
-  const comingUp = upcomingForFeed(activities);
+  const comingUp = activities;
+  const needs = needsYou(activities, polls);
+  const ranks = leaderboard(activities, charity);
+  const percent = Math.min(
+    (charity.raised / Math.max(charity.goal, 1)) * 100,
+    100,
+  );
 
   return (
     <>
@@ -35,65 +58,47 @@ export function Dashboard({
         <p>Here’s what the group is moving on.</p>
       </header>
 
-      <button className={styles.attentionCard} onClick={onRoles}>
-        <span className={styles.attentionIcon}>
-          <Bell size={19} />
-        </span>
-        <span className={styles.attentionText}>
-          <strong>2 things need you</strong>
-          <small>Camping roles close tomorrow · Soccer RSVP due today</small>
-        </span>
-        <ArrowRight size={18} />
-      </button>
+      {needs.length > 0 && (
+        <button
+          type="button"
+          className={styles.attentionCard}
+          onClick={() => {
+            const first = needs[0];
+            if (first?.activityId) onRoles(first.activityId);
+          }}
+        >
+          <span className={styles.attentionIcon}>
+            <Bell size={19} />
+          </span>
+          <span className={styles.attentionText}>
+            <strong>
+              {needs.length} thing{needs.length === 1 ? "" : "s"} need you
+            </strong>
+            <small>
+              {needs
+                .map((item) => item.title)
+                .slice(0, 2)
+                .join(" · ")}
+            </small>
+          </span>
+          <ArrowRight size={18} />
+        </button>
+      )}
 
       <div className={styles.sectionHead}>
         <div>
           <span className={ui.eyebrow}>DECIDE TODAY</span>
           <h2>Quick decisions</h2>
         </div>
-        <button className={ui.outlineButton}>
+        <button type="button" className={ui.outlineButton} onClick={onNewPoll}>
           <Plus size={16} /> New poll
         </button>
       </div>
 
       <div className={styles.pollGrid}>
-        <QuickPollCard />
-        <article className={`${ui.card} ${styles.pollCard}`}>
-          <div className={ui.cardHead}>
-            <span className={`${styles.liveBadge} ${styles.liveBadgeViolet}`}>
-              37 MIN LEFT
-            </span>
-          </div>
-          <h3>Which field for Thursday?</h3>
-          <p className={ui.sub}>Started by Omar · 9 votes</p>
-          <div className={styles.pollOptions}>
-            <button className={styles.pollOption}>
-              <span className={styles.pollFill} style={{ width: "67%" }} />
-              <span className={styles.pollName}>
-                <span className={`${ui.radio} ${ui.radioSmall}`} />
-                Bossen Field
-              </span>
-              <span className={styles.pollVotes}>6</span>
-            </button>
-            <button className={styles.pollOption}>
-              <span className={styles.pollFill} style={{ width: "33%" }} />
-              <span className={styles.pollName}>
-                <span className={`${ui.radio} ${ui.radioSmall}`} />
-                Currie Park
-              </span>
-              <span className={styles.pollVotes}>3</span>
-            </button>
-          </div>
-          <div className={ui.cardFoot}>
-            <div className={ui.footMeta}>
-              <AvatarStack count={3} extra={6} />
-              <span>9 friends voted</span>
-            </div>
-            <button className={ui.linkButton}>
-              Details <ArrowRight size={15} />
-            </button>
-          </div>
-        </article>
+        {polls.map((poll) => (
+          <QuickPollCard key={poll.id} poll={poll} onVote={onVote} />
+        ))}
       </div>
 
       <div className={styles.sectionHead}>
@@ -101,7 +106,7 @@ export function Dashboard({
           <span className={ui.eyebrow}>COMING UP</span>
           <h2>Activities</h2>
         </div>
-        <button className={ui.linkButton} onClick={onCreate}>
+        <button type="button" className={ui.linkButton} onClick={onCreate}>
           New hangout <ArrowRight size={15} />
         </button>
       </div>
@@ -113,6 +118,7 @@ export function Dashboard({
             activity={activity}
             onRsvp={onRsvp}
             onRoles={onRoles}
+            onPay={onPay}
           />
         ))}
       </div>
@@ -131,22 +137,45 @@ export function Dashboard({
               <HeartHandshake size={22} />
             </span>
             <div>
-              <span className={ui.eyebrow}>AUGUST SADAQA</span>
-              <strong>Help furnish a family’s new home</strong>
+              <span className={ui.eyebrow}>{charity.monthLabel}</span>
+              <strong>{charity.title}</strong>
             </div>
           </div>
           <p className={ui.sub}>
-            $1,420 raised by 18 friends · 4 days left to give
+            ${charity.raised.toLocaleString()} raised by {charity.givers}{" "}
+            friends · {charity.daysLeft} days left to give
           </p>
           <div className={`${ui.progress} ${ui.progressRose}`}>
-            <span style={{ width: "84%" }} />
+            <span style={{ width: `${percent}%` }} />
           </div>
           <div className={ui.splitButtons}>
-            <button className={ui.darkButton}>Give now</button>
-            <button className={ui.outlineButton}>Nominate</button>
+            <button type="button" className={ui.darkButton} onClick={onGive}>
+              {charity.myGiven ? "Given this month" : "Give now"}
+            </button>
+            <button
+              type="button"
+              className={ui.outlineButton}
+              onClick={onCharity}
+            >
+              Nominate
+            </button>
           </div>
         </section>
       </div>
+
+      <LeaderboardCard rows={ranks} />
+
+      {notices.length > 0 && (
+        <section className={`${ui.card} ${styles.inviteRow}`}>
+          <span className={styles.inviteIcon}>
+            <Bell size={20} />
+          </span>
+          <div>
+            <strong>{notices[0]?.title}</strong>
+            <small>{notices[0]?.body}</small>
+          </div>
+        </section>
+      )}
 
       <section className={`${ui.card} ${styles.inviteRow}`}>
         <span className={styles.inviteIcon}>
@@ -158,7 +187,9 @@ export function Dashboard({
             Bring in someone you trust. They’ll need your invite link.
           </small>
         </div>
-        <button className={ui.outlineButton}>Invite</button>
+        <button type="button" className={ui.outlineButton}>
+          Invite
+        </button>
       </section>
     </>
   );

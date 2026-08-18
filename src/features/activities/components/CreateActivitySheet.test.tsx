@@ -111,4 +111,38 @@ describe("CreateActivitySheet", () => {
       kind: "Recurring",
     });
   });
+
+  it("posts a planned trip from the details step", async () => {
+    const user = userEvent.setup();
+    const onCreatePlanned = vi.fn();
+
+    render(
+      <CreateActivitySheet
+        open
+        onClose={vi.fn()}
+        onCreatePlanned={onCreatePlanned}
+      />,
+    );
+
+    await user.type(screen.getByLabelText(/Activity name/i), "Camping weekend");
+    await user.click(
+      screen.getByRole("button", { name: /Roles, money, deadlines/i }),
+    );
+    await user.click(screen.getByRole("button", { name: /Continue/i }));
+    await user.click(screen.getByRole("button", { name: /Assign roles/i }));
+    await user.click(
+      screen.getByRole("button", { name: /Attach group funding/i }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /Post to the group/i }),
+    );
+
+    expect(onCreatePlanned).toHaveBeenCalledOnce();
+    expect(onCreatePlanned.mock.calls[0][0]).toMatchObject({
+      title: "Camping weekend",
+      kind: "Planned",
+    });
+    expect(onCreatePlanned.mock.calls[0][0].roles?.length).toBeGreaterThan(0);
+    expect(onCreatePlanned.mock.calls[0][0].funding?.perPerson).toBe(60);
+  });
 });

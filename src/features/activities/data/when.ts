@@ -69,3 +69,24 @@ export function isDateIso(value: string) {
 export function isTime24(value: string) {
   return /^\d{2}:\d{2}$/.test(value);
 }
+
+export function endOfCalendarDay(date: CalendarDate) {
+  return new Date(date.year, date.month, date.day + 1);
+}
+
+export function isOpenDay(date: CalendarDate, now: Date) {
+  return now.getTime() < endOfCalendarDay(date).getTime();
+}
+
+export function nextOpenDate(from: CalendarDate, now: Date): CalendarDate {
+  let date = from;
+  while (!isOpenDay(date, now)) {
+    date = addWeeks(date, 1);
+  }
+  return date;
+}
+
+export function msUntilNextMidnight(now: Date) {
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  return Math.max(next.getTime() - now.getTime(), 0);
+}
